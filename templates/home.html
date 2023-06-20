@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+
+<html>
+
+<head>
+
+    <title>Amazon Best Sellers</title>
+    <!-- <script src="statics/app.js"></script> -->
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.1/jquery.min.js"></script>
+    <!-- <script src="/node_modules/axios/lib/axios.js"></script>
+    <script>
+        var axios = require('axios');
+        const jsdom = require('jsdom');
+        const { JSDOM } = jsdom;
+    </script> -->
+    <!-- <script src="https://unpkg.com/axios/dist/axios.min.js"></script> -->
+    <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+
+
+
+</head>
+
+<body>
+    <div class="firstPageDiv">
+        <h1 style="margin-top: 100px;">Get Top 6 Products for 6 Catagories In Amazon SA</h1>
+        <button style="margin-top: 50px;" onclick="getBestSellers()">Get Best Sellers</button>
+    </div>
+</body>
+
+</html>
+
+<style>
+    .firstPageDiv {
+        text-align: center;
+    }
+</style>
+
+<script>
+
+    header('Acess-Control-Allow-Origin: *')
+
+    function getBestSellers() {
+        console.log('we are inside script')
+        var amazonUrl = "https://www.amazon.sa/-/en/gp/bestsellers/?ref_=nav_em_cs_bestsellers_0_1_1_2"
+        axios.get(amazonUrl)
+            .then(function (response) {
+                console.log(response.data);
+            })
+            .catch(function (error) {
+                console.error(error);
+            });
+    }
+</script>
