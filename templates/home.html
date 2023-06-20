@@ -3,21 +3,7 @@
 <html>
 
 <head>
-
     <title>Amazon Best Sellers</title>
-    <!-- <script src="statics/app.js"></script> -->
-    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.1/jquery.min.js"></script>
-    <!-- <script src="/node_modules/axios/lib/axios.js"></script>
-    <script>
-        var axios = require('axios');
-        const jsdom = require('jsdom');
-        const { JSDOM } = jsdom;
-    </script> -->
-    <!-- <script src="https://unpkg.com/axios/dist/axios.min.js"></script> -->
-    <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
-
-
-
 </head>
 
 <body>
@@ -70,35 +56,14 @@
         box-shadow: 0;
     }
 
-    /* 
-    table {
-        border-collapse: collapse;
-        margin-top: 40px;
-        text-align: center;
-        border-color: darkslategray;
-    }
-
-    th,
-    td {
-        text-align: left;
-        padding: 8px;
-        color: darkslategray;
-    }
-
-    tr:nth-child(even) {
-        background-color: #D6EEEE;
-    } */
 
     table {
-        /* table-layout: fixed;*/
+
         border-collapse: collapse;
         margin: 25px 0;
         font-size: 0.9em;
         font-family: sans-serif;
-        /* max-width: 150px; */
-        /* width: 80%; */
         box-shadow: 0 0 20px rgba(0, 0, 0, 0.15);
-        /* overflow-y: scroll; */
         width: 90%;
         margin-left: 5%;
     }
@@ -131,20 +96,3 @@
         border-bottom: 2px solid darkslategray;
     }
 </style>
-
-<script>
-
-    // header('Acess-Control-Allow-Origin: *')
-
-    // function getBestSellers() {
-    //     console.log('we are inside script')
-    //     var amazonUrl = "https://www.amazon.sa/-/en/gp/bestsellers/?ref_=nav_em_cs_bestsellers_0_1_1_2"
-    //     axios.get(amazonUrl)
-    //         .then(function (response) {
-    //             console.log(response.data);
-    //         })
-    //         .catch(function (error) {
-    //             console.error(error);
-    //         });
-    // }
-</script>
