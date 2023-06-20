@@ -1,12 +1,7 @@
-import requests
+import requests  ## don't use as it does not get you all the elements of the scrapped html
+import httpx  ## better alternative to requests library for this project
 from bs4 import BeautifulSoup
-import pandas as pd
-from time import sleep
 import numpy as np
-from parsel import Selector
-from selectolax.parser import HTMLParser
-
-import httpx
 
 
 headers = {
@@ -14,24 +9,12 @@ headers = {
     "Accept-Language": "en-US, en:q=0.5",
 }
 
-search_query = ""
 base_url = (
     "https://www.amazon.sa/-/en/gp/bestsellers/?ref_=nav_em_cs_bestsellers_0_1_1_2"
 )
 
 
 def amazonScrapper():
-    # response = requests.get(base_url, headers)
-    # html = HTMLParser(response.text)
-    # data = html.css("div.p13n-sc-uncoverable-faceout")
-
-    # for item in data:
-    #     print(item.css("span")[-1].text())
-
-    # products = html.css("p13n-sc-uncoverable-faceout")
-
-    # for product in products:
-    #     print(product.text())
 
     response = httpx.get(
         base_url
@@ -45,17 +28,12 @@ def amazonScrapper():
     for category in products_Categories:
         arrayOfCategories.append(category.text.replace("Best Sellers in ", ""))
 
-    # products_container = soup.find_all(
-    #     "div", attrs={"class": "zg-carousel-general-faceout"}
-    # )
-
     products_container = soup.find_all("li", attrs={"class": "a-carousel-card"})
 
     arrayOfCategories = list(np.repeat(arrayOfCategories, 6))
 
     arrayOfProductsInfo = []
 
-    print(len(products_container))
     for i, product in enumerate(products_container):
 
         try:
@@ -106,7 +84,7 @@ def amazonScrapper():
             product_PriceSAR = np.nan
 
         try:
-            product_Url = f'amazon.sa{product.find("a", attrs={"class": "a-link-normal"})["href"]}'
+            product_Url = f'https://www.amazon.sa{product.find("a", attrs={"class": "a-link-normal"})["href"]}'
         except:
             product_Url = np.nan
 
@@ -122,81 +100,16 @@ def amazonScrapper():
         }
 
         arrayOfProductsInfo.append(dict_product_info)
+    # dtypes dict was not used due to an unknown error
+    dtypes = {
+        "Category": str,
+        "Category_Rank": str,
+        "Name": str,
+        "Brand": str,
+        "Rate_Out_Of_5.0": float,
+        "Number_Of_Reviews": int,
+        "Price_In_SAR": float,
+        "Product_Url": str,
+    }
 
-    print(arrayOfProductsInfo)
-    # categories = soup.find_all("h2", {"class": "a-carousel-heading"})
-    # products_titles = soup.find_all(
-    #     "div", attrs={"class": "p13n-sc-truncate-desktop-type2"}
-    # )
-    # startsRate = soup.find_all("span", attrs={"class": "a-icon-alt"})  # need fix
-    # reviews_num = soup.find_all("span", attrs={"class": "a-size-small"})
-
-    # print(len(products_titles))
-    # for i in range(0, len(categories)):
-    #     print(str(categories[i].text).replace("Best Sellers in ", ""))
-    # print(len(reviews_num))
-    # for i in range(0, len(reviews_num)):
-    #     print(reviews_num[i].text)
-
-    # product_container = soup.find_all(
-    #     "div", attrs={"class": "p13n-sc-uncoverable-faceout"}
-    # )
-
-    arrayOfProducts = []
-
-    # print(len(product_container))
-    # for i in range(0, len(product_container)):
-    #     print("=======================================================")
-    #     # product_Name = product_container[i].find(
-    #     #     "div", attrs={"class": "p13n-sc-truncate-desktop-type2"}
-    #     # )
-    #     # product_StartsRate = product_container[i].find(
-    #     #     "span", attrs={"class": "a-icon-alt"}
-    #     # )
-    #     # product_ReviewsNum = product_container[i].find(
-    #     #     "span", attrs={"class": "a-size-small"}
-    #     # )
-    #     # product_SellerBrand = product_container[i].find(
-    #     #     "div", attrs={"class": "_cDEzb_p13n-sc-css-line-clamp-1_1Fn1y"}
-    #     # )
-    #     product_PriceSAR = product_container[i].find(
-    #         "span", attrs={"class": "a-size-base"}
-    #     )
-
-    #     print(product_PriceSAR)
-
-    # print(product_container[i].text)
-
-    # print(f"Name: {'Null' if product_Name.text is None else product_Name.text}")
-    # print(
-    #     f"StartsRate: {'Null' if product_StartsRate.text is None else product_StartsRate.text}"
-    # )
-    # print(
-    #     f"Review Num: {'Null' if product_ReviewsNum.text is None else product_ReviewsNum.text}"
-    # )
-    # print(
-    #     f"Seller Brand: {'Null' if product_SellerBrand.text is None else product_SellerBrand.text}"
-    # )
-    # print(
-    #     f"Price: {'Null' if product_PriceSAR.text is None else product_PriceSAR.text}"
-    # )
-
-    # product_info_dict = {
-    #     "product_Name": product_Name.text if product_Name.text else np.nan,
-    #     "product_StartsRate": product_StartsRate.text
-    #     if product_StartsRate.text
-    #     else np.nan,
-    #     "product_ReviewsNum": product_ReviewsNum.text
-    #     if product_ReviewsNum.text
-    #     else np.nan,
-    #     "product_SellerBrand": product_SellerBrand.text
-    #     if product_SellerBrand.text
-    #     else np.nan,
-    #     "product_PriceSAR": product_PriceSAR.text
-    #     if product_PriceSAR.text
-    #     else np.nan,
-    # }
-    # print(product_info_dict)
-
-
-amazonScrapper()
+    return arrayOfProductsInfo
