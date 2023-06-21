@@ -8,15 +8,28 @@
 
 <body>
     <h4>This website is built by: Abdulaziz Alharbi</h4>
+    <h2>Note: This website is built just to demo the whole project, if you want to see the whole data pipeline visite
+        the github of the project at: <a href="https://github.com/3zHrb/DataEngineering-AmazonSaBestSellers">Github
+            Repo</a> and click on
+        (Project_Data_Pipeline) folder</h2>
     <div class="firstPageDiv">
         <form method=GET action="{{ url_for('getBestSellers') }}">
-            <h1 style="margin-top: 100px;">Get Top 6 Products for 6 Catagories In Amazon SA</h1>
+            <h1 style="margin-top: 100px;">Get Top 6 Products For 6 Catagories In Amazon.sa</h1>
             <input type="submit" style="margin-top: 50px;" value="Get Best Sellers"></input>
         </form>
     </div>
+    <div>
+        {% if bucketName%}
+        <h5 style="margin-top: 15px; margin-bottom: 15px;">File was successfully loaded to s3 bucket: {{bucketName}}
+        </h5>
+        {% endif %}
+    </div>
     {% if df_html %}
     <div class="bestSellersTableDiv">
-        {{ df_html | safe }}
+        <form method="POST" action="{{ url_for('LoadData') }}">
+            <input type="submit" style="margin-top: 20px;" value="Load To S3 Bucket">
+            {{ df_html | safe }}
+        </form>
     </div>
     {% endif %}
 </body>
@@ -26,6 +39,7 @@
 <style>
     body {
         text-align: center;
+        margin: auto;
         padding: 0;
         font-family: Arial, Helvetica, sans-serif;
         width: 100%;
@@ -36,10 +50,10 @@
         background-color: #D6EEEE;
         color: darkslategray;
         padding: 50px;
-        width: 50%;
+        /* width: 50%; */
         margin-top: 40px;
         ;
-        margin-left: 23%;
+        /* margin-left: 22%; */
         border-radius: 5px;
         box-shadow: rgba(99, 99, 99, 0.2) 0px 2px 8px 0px;
     }

@@ -9,17 +9,16 @@ headers = {
     "Accept-Language": "en-US, en:q=0.5",
 }
 
-base_url = (
-    "https://www.amazon.sa/-/en/gp/bestsellers/?ref_=nav_em_cs_bestsellers_0_1_1_2"
-)
+base_url = "https://www.amazon.sa/-/en/gp/bestsellers"
 
 
 def amazonScrapper():
 
+    print("2: amazonScrapper is triggered ...")
     response = httpx.get(
-        base_url
+        base_url, headers=headers
     )  # because requests.get() does not get all the html elements such as price, while httpx was able to
-
+    print("2: get request is done ...")
     soup = BeautifulSoup(response.text, "html.parser")
     products_Categories = soup.find_all("h2", attrs={"class": "a-carousel-heading"})
 
