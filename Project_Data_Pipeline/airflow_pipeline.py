@@ -1,16 +1,28 @@
+from airflow import DAG
+from airflow.operators.python import PythonOperator
+from datetime import datetime
+
 import extract
 import transform
 import load
 
-url = (
-    base_url
-) = "https://www.amazon.sa/-/en/gp/bestsellers/?ref_=nav_em_cs_bestsellers_0_1_1_2"
 
+dag = DAG(
+    "amazon_best_sellers_pipeline",
+    schedule="@daily",
+    start_date=datetime(2023, 6, 24),
+)
 
-def runPipeline():
-    responseText = extract.getBestSellersHtml(url)
-    df = transform.transformSellerInfo(responseText)
-    load.loadToCloudStorage(df)
+extract_task = PythonOperator(
+    task_id="extract", python_callable=extract.getBestSellersHtml, dag=dag
+)
 
+transform_task = PythonOperator(
+    task_id="transform", python_callable=transform.transformSellerInfo, dag=dag
+)
 
-runPipeline()
+load_task = PythonOperator(
+    task_id="load", python_callable=load.loadToCloudStorage, dag=dag
+)
+
+extract_task >> transform_task >> load_task

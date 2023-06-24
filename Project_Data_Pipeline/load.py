@@ -17,6 +17,7 @@ def loadToCloudStorage(df):
 
     now = datetime.datetime.now()
 
+    # you don't ahve to do all the code below, you can replace it with df.to_csv(https://S3_Bucket_Url)
     df.to_csv("amazonSa_BestSellers{}.csv".format(now))
 
     s3.Bucket("amazon-best-sellers-bucket").upload_file(

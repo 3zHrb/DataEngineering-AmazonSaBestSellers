@@ -1,5 +1,4 @@
 from flask import Flask, render_template, request, url_for, jsonify, session
-from flask_cors import CORS
 import amazon_sa_bestSellers_scrapper
 import pandas as pd
 import uuid
@@ -8,7 +7,6 @@ import boto3
 import secrets
 
 app = Flask(__name__, template_folder="templates", static_folder="statics")
-CORS(app)
 app.secret_key = secrets.token_hex(16)
 
 
@@ -27,9 +25,9 @@ def getBestSellers():
     currentDirectory = os.getcwd()
 
     session["user_session_id"] = str(uuid.uuid4())
-    df.to_csv(
-        f'{currentDirectory}/website/csv_Files/{session.get("user_session_id")}.csv'
-    )
+    print("current working directory")
+    print(currentDirectory)
+    df.to_csv(f'{currentDirectory}/csv_Files/{session.get("user_session_id")}.csv')
     df_html = df.to_html()
     print("html table is loaded ...")
     return render_template("home.html", df_html=df_html)
@@ -39,7 +37,7 @@ def getBestSellers():
 def LoadData():
     currentDirectory = os.getcwd()
     df = pd.read_csv(
-        f'{currentDirectory}/website/csv_Files/{session.get("user_session_id")}.csv'
+        f'{currentDirectory}/csv_Files/{session.get("user_session_id")}.csv'
     )
 
     s3 = boto3.resource(
@@ -50,17 +48,15 @@ def LoadData():
     )
 
     s3.Bucket("amazon-best-sellers-bucket").upload_file(
-        Filename=f'{currentDirectory}/website/csv_Files/{session.get("user_session_id")}.csv',
+        Filename=f'{currentDirectory}/csv_Files/{session.get("user_session_id")}.csv',
         Key=f'uploadedBybutton-{session.get("user_session_id")}.csv',
     )
 
-    os.remove(
-        f'{currentDirectory}/website/csv_Files/{session.get("user_session_id")}.csv'
-    )
+    os.remove(f'{currentDirectory}/csv_Files/{session.get("user_session_id")}.csv')
 
     return render_template("home.html", bucketName="amazon-best-sellers-bucket")
 
 
 if __name__ == "__main__":
     print("Server is running ...")
-    app.run(debug=True, threaded=True)
+    app.run(debug=True)
