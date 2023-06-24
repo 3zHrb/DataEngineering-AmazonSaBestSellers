@@ -8,6 +8,11 @@ urlretrieve(
     "https://upload.wikimedia.org/wikipedia/commons/thumb/a/a9/Amazon_logo.svg/320px-Amazon_logo.svg.png",
     "./Amazon.png",
 )
+
+urlretrieve(
+    url="https://upload.wikimedia.org/wikipedia/commons/thumb/e/ed/Pandas_logo.svg/1200px-Pandas_logo.svg.png",
+    filename="./pandas.png",
+)
 urlretrieve(
     "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQTHgknZg7izLfAmpGQSyD5GY-0MjjH_HBBFaj0l26krkYmAnrQ2XGuvn4zhRnscteTWAA&usqp=CAU",
     "./airflow.png",
@@ -22,7 +27,7 @@ with Diagram(
         with Cluster("Extract"):
             extract = Custom("Amazon (Scrapping)", "./Amazon.png", width="2")
         with Cluster("Transform"):
-            transform = Custom("Python + Pandas", icon_path="./pandasIcon.png")
+            transform = Custom("Python + Pandas", icon_path="./pandas.png")
         with Cluster("Load"):
             load = S3("aws s3 bucket")
 
