@@ -6,30 +6,39 @@
     <title>Amazon Best Sellers</title>
 </head>
 
-<body>
-    <h4>This website is built by: Abdulaziz Alharbi</h4>
-    <h2>Note: This website is built just to demo the whole project, if you want to see the whole data pipeline visite
-        the github of the project at: <a href="https://github.com/3zHrb/DataEngineering-AmazonSaBestSellers">Github
-            Repo</a> and click on
-        (Project_Data_Pipeline) folder</h2>
+<body onload="bodyIsLoaded()">
+    <div class="projectDescriptionDiv">
+        <h1>This website is built by: Abdulaziz Alharbi</h1>
+        <h2>Info About This Project</h2>
+        <h3>This project is scrapping data from amazon.sa website for the best sellers, it takes the top 6 products for
+            the top 6 categories</h3>
+        <h4>This website is built just to demo the whole project, if you want to see the complete data pipeline visite
+            the github of the project at: <a href="https://github.com/3zHrb/DataEngineering-AmazonSaBestSellers">Github
+                Repo</a> and click on
+            (Project_Data_Pipeline) folder</h4>
+        <h5>Project Diagram Below Is Built Using Diagrams.py Library:</h5>
+        <img src="{{ url_for('static', filename='/amazon.sa_best_sellers_diagram,_built_by:_abdulaziz_alharbi.png')}}"
+            style="object-fit: cover;width:50%; height:15%; border-radius: 10px; box-shadow: rgba(99, 99, 99, 0.2) 0px 4px 16px 0px;">
+    </div>
     <div class="firstPageDiv">
         <form method=GET action="{{ url_for('getBestSellers') }}">
-            <h1 style="margin-top: 100px;">Get Top 6 Products For 6 Catagories In Amazon.sa</h1>
+            <h1 style="margin-top: 100px;">Get Top 6 Products For The Top 6 Categories In Amazon.sa</h1>
             <input type="submit" style="margin-top: 50px;" value="Get Best Sellers"></input>
         </form>
     </div>
     <div>
-        {% if bucketName%}
-        <h5 style="margin-top: 15px; margin-bottom: 15px;">File was successfully loaded to s3 bucket: {{bucketName}}
+        {% if s3UploadingMessage%}
+        <h5 style="margin-top: 15px; margin-bottom: 15px;">{{s3UploadingMessage}}
         </h5>
         {% endif %}
     </div>
     {% if df_html %}
-    <div class="bestSellersTableDiv">
+    <div class="bestSellersTableDiv" id="middle" style="padding: 0px;">
         <form method="POST" action="{{ url_for('LoadData') }}">
             <input type="submit" style="margin-top: 20px;" value="Load To S3 Bucket">
             {{ df_html | safe }}
         </form>
+        <button onclick="scrollBackUp()">Scroll Back Up</button>
     </div>
     {% endif %}
 </body>
@@ -45,17 +54,29 @@
         width: 100%;
     }
 
+    .projectDescriptionDiv {
+        background-color: aquamarine;
+        border-radius: 10px;
+        padding: 20px;
+        width: 70%;
+        margin-left: 15%;
+        margin-top: 30px;
+        box-shadow: rgba(99, 99, 99, 0.2) 10px 8px 32px 10px;
+    }
+
     .firstPageDiv {
         text-align: center;
         background-color: #D6EEEE;
         color: darkslategray;
-        padding: 50px;
+        padding: 20px;
         /* width: 50%; */
         margin-top: 40px;
-        ;
+        margin-bottom: 40px;
         /* margin-left: 22%; */
+        width: 70%;
+        margin-left: 15%;
         border-radius: 5px;
-        box-shadow: rgba(99, 99, 99, 0.2) 0px 2px 8px 0px;
+        box-shadow: rgba(99, 99, 99, 0.2) 10px 8px 32px 10px;
     }
 
     input[type=submit] {
@@ -67,6 +88,19 @@
     }
 
     input[type=submit]:focus {
+        box-shadow: 0;
+    }
+
+    button {
+        padding: 10px;
+        background-color: #D6EEEE;
+        color: darkslategray;
+        border-radius: 5px;
+        box-shadow: rgba(99, 99, 99, 0.2) 0px 2px 8px 0px;
+        margin-bottom: 20px;
+    }
+
+    button {
         box-shadow: 0;
     }
 
@@ -110,3 +144,42 @@
         border-bottom: 2px solid darkslategray;
     }
 </style>
+<script>
+
+    function bodyIsLoaded() {
+        console.log('firstPageDivIsLoaded Triggered')
+        const scrollToOptionsBody = {
+            top: document.body.scrollHeight,
+            behavior: 'smooth',
+            duration: 1000
+        };
+        window.scrollTo(scrollToOptionsBody);
+    }
+
+    function scrollBackUp() {
+
+        const scrollUpOptions = {
+            top: document.body.scrollTop,
+            behavior: 'smooth',
+            duration: 1000
+        }
+
+        window.scrollTo(scrollUpOptions)
+
+    }
+
+    // function scrollToTheTopOfTheTable() {
+    //     // var tableDiv = document.getElementById('bestSellersTableDiv')
+
+    //     // const scrollToOptions = {
+    //     //     top: tableDiv.scrollHeight,
+    //     //     behavior: 'smooth',
+    //     //     duration: 1000
+    //     // };
+    //     // window.scrollTo(scrollToOptions);
+
+    //     // var divElement = document.getElementById('middle');
+    //     // divElement.scrollIntoView({ behavior: 'smooth', block: 'start' });
+
+    // }
+</script>

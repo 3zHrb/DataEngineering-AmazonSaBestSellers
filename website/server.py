@@ -18,26 +18,30 @@ def home():
 
 @app.route("/BestSellers", methods=["GET"])
 def getBestSellers():
-    print("getBestSellers is triggered ...")
     df = pd.DataFrame(amazon_sa_bestSellers_scrapper.amazonScrapper())
-    print("we got the dataframe ...")
     df["Number_Of_Reviews"] = df["Number_Of_Reviews"].astype("Int64")
     currentDirectory = os.getcwd()
 
     session["user_session_id"] = str(uuid.uuid4())
-    print("current working directory")
-    print(currentDirectory)
-    df.to_csv(f'{currentDirectory}/csv_Files/{session.get("user_session_id")}.csv')
+
+    lastDirectory = os.path.split(currentDirectory)[-1]
+    if lastDirectory == "AmazonSaBestSellers":
+        session["filesDirectory"] = f"{os.getcwd()}/website/csv_Files"
+    else:
+        session["filesDirectory"] = f"{os.getcwd()}/csv_Files"
+
+    df.to_csv(f'{session.get("filesDirectory")}/{session.get("user_session_id")}.csv')
     df_html = df.to_html()
-    print("html table is loaded ...")
+
     return render_template("home.html", df_html=df_html)
 
 
 @app.route("/LoadData", methods=["POST"])
 def LoadData():
     currentDirectory = os.getcwd()
+
     df = pd.read_csv(
-        f'{currentDirectory}/csv_Files/{session.get("user_session_id")}.csv'
+        f'{session.get("filesDirectory")}/{session.get("user_session_id")}.csv'
     )
 
     s3 = boto3.resource(
@@ -47,14 +51,20 @@ def LoadData():
         aws_secret_access_key=os.environ.get("aws_secret_access_key"),
     )
 
-    s3.Bucket("amazon-best-sellers-bucket").upload_file(
-        Filename=f'{currentDirectory}/csv_Files/{session.get("user_session_id")}.csv',
-        Key=f'uploadedBybutton-{session.get("user_session_id")}.csv',
+    s3UploadingMessage = (
+        "File was successfully loaded to s3 bucket: amazon-best-sellers-bucket ✅"
     )
+    try:
+        s3.Bucket("amazon-best-sellers-bucket").upload_file(
+            Filename=f'{session.get("filesDirectory")}/{session.get("user_session_id")}.csv',
+            Key=f'uploadedBybutton-{session.get("user_session_id")}.csv',
+        )
+    except:
+        s3UploadingMessage = "File was not successfully loaded to s3 bucket: amazon-best-sellers-bucket ❌"
 
-    os.remove(f'{currentDirectory}/csv_Files/{session.get("user_session_id")}.csv')
+    os.remove(f'{session.get("filesDirectory")}/{session.get("user_session_id")}.csv')
 
-    return render_template("home.html", bucketName="amazon-best-sellers-bucket")
+    return render_template("home.html", s3UploadingMessage=s3UploadingMessage)
 
 
 if __name__ == "__main__":
